@@ -13,10 +13,11 @@ it('renders without crashing', () => {
     ReactDOM.unmountComponentAtNode(div);
 });
 
-it('Header is selectable by class "App-header"', function() {
-    expect(shallow( < Header / > ).is('.App-header')).toBe(true);
+it('Header mounts in a full DOM', function() {
+    expect(mount(< Header />).length).toBe(1);
 });
 
-it('Header title mounts in a full DOM', function() {
-    expect(mount(< Header />).find('.App-title').length).toBe(1);
+
+it('Header title is h2 with "cookking" text', function() {
+    expect(mount(< Header />).find('h2').text()).toBe('cookking');
 });
