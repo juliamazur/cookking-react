@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
+// import Input from '@material-ui/core/Input';
+// import InputLabel from '@material-ui/core/InputLabel';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
-import FormHelperText from '@material-ui/core/FormHelperText';
+import AddIcon from '@material-ui/icons/Add';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
@@ -47,10 +47,17 @@ const styles = theme => ({
 class RecipeForm extends React.Component {
   state = {
     name: '',
+    file: 'http://simpleicon.com/wp-content/uploads/dish.png',
   };
 
-  handleChange = event => {
+  handleNameChange = event => {
     this.setState({ name: event.target.value });
+  };
+
+  handleImageChange = event => {
+    this.setState({
+      file: URL.createObjectURL(event.target.files[0])
+    })
   };
 
   render() {
@@ -63,40 +70,47 @@ class RecipeForm extends React.Component {
           <input
             accept="image/*"
             className={classes.input}
-            id="raised-button-file"
+            id="button-file"
             multiple
             type="file"
+            onChange={this.handleImageChange}
           />
-          <label htmlFor="raised-button-file">
-          <Button variant="outlined" color="primary" raised component="span" className={classes.button}>
-            Dodaj obrazek
-          </Button>
-        </label>
-        <Card>
-          <CardMedia
-            className={classes.media}
-            image="/static/images/cards/paella.jpg"
-            title="Contemplative Reptile"
-                      style={{width: '100%'}}
-          />
+          <Card>
+            <CardMedia
+              className={classes.media}
+              image={this.state.file}
+              style={{width: '100%'}}
+            />
           </Card>
+          <label htmlFor="button-file">
+            <Button variant="fab" color="primary" component="span" className={classes.button}>
+              <AddIcon />
+            </Button>
+          </label>
         </Grid>
-        <Grid item xs={12} lg={7}>
-        <FormControl className={classes.formControl}>
-          <InputLabel htmlFor="recipe-name">Tytuł przepisu</InputLabel>
-          <Input id="recipe-name" value={this.state.name} onChange={this.handleChange} />
-        </FormControl>
-        <AddIngredient/>
-        </Grid>
-        <Grid item xs={12}>
-        <FormControl className={classes.formControl} fullWidth='true' >
-          <TextField id="description" multiline={true} rows={7}/>
-        </FormControl>
-        </Grid>
-        <Grid item xs={12}>
-          <Button variant="outlined" color="primary" className={classes.button}>
-            Zapisz
-          </Button>
+        <Grid item xs={12} lg={6}>
+        <h1>Edytuj przepis</h1>
+          <FormControl fullWidth={true}>
+            <TextField
+              id="recipe-name"
+              value={this.state.name}
+              label="Nazwa przepisu"
+              placeholder="Wpisz nazwę przepisu"
+              className={classes.formControl}
+              margin="normal"
+              onChange={this.handleNameChange}
+            />
+          </FormControl>
+          <AddIngredient/>
+          <FormControl className={classes.formControl} fullWidth={true}>
+            <TextField
+              id="recipe-description"
+              value={this.state.description}
+              label="Opis przepisu"
+              multiline
+              rows={3}/>
+          </FormControl>
+          <Button variant="outlined" color="primary" onClick={this.handleClickOpen}>Zapisz</Button>
         </Grid>
       </Grid>
       </Paper>

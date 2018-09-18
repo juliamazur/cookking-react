@@ -6,11 +6,12 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import InputLabel from '@material-ui/core/InputLabel';
+// import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import ingredientsJson from '../fixtures/ingredients.json';
 
 const styles = theme => ({
   container: {
@@ -24,13 +25,31 @@ const styles = theme => ({
 });
 
 class AddIngredient extends React.Component {
-  state = {
-    open: false,
-    age: '',
-  };
+
+  constructor() {
+    super();
+
+    let ingredientsArray = [];
+    for (let i in ingredientsJson) {
+      ingredientsArray[ingredientsJson[i].id] = ingredientsJson[i].name;
+    }
+
+    this.state = {
+      open: false,
+      ingredient: '',
+      ingredientsList: [],
+      allIngredients: ingredientsJson,
+      ingredientsArray: ingredientsArray,
+    };
+
+    console.log(ingredientsJson);
+    console.log(ingredientsArray);
+  }
 
   handleChange = name => event => {
-    this.setState({ [name]: Number(event.target.value) });
+    this.setState(prevState => ({
+      ingredientsList: [...prevState.ingredientsList, event.target.value]
+    }))
   };
 
   handleClickOpen = () => {
@@ -46,6 +65,12 @@ class AddIngredient extends React.Component {
 
     return (
       <div>
+        <ul>
+          {this.state.ingredientsList.map(ingredient => {
+            return (<li key={ingredient}>{this.state.ingredientsArray[ingredient]}</li>)
+          })
+        }
+        </ul>
         <Button variant="outlined" color="primary" onClick={this.handleClickOpen}>Dodaj składnik</Button>
         <Dialog
           disableBackdropClick
@@ -57,18 +82,18 @@ class AddIngredient extends React.Component {
           <DialogContent>
             <form className={classes.container}>
               <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="age-simple">Składnik</InputLabel>
                 <Select
-                  value={this.state.age}
-                  onChange={this.handleChange('age')}
-                  input={<Input id="age-simple" />}
+                  value={this.state.ingredient}
+                  onChange={this.handleChange('ingredient')}
+                  input={<Input id="ingredient" />}
                 >
                   <MenuItem value="">
                     <em>Wybierz</em>
                   </MenuItem>
-                  <MenuItem value={10}>Makaron</MenuItem>
-                  <MenuItem value={20}>Mascarpone</MenuItem>
-                  <MenuItem value={30}>Orzechy włoskie</MenuItem>
+                    {this.state.allIngredients.map(ingredient => {
+                      return(<MenuItem key={ingredient.id} value={ingredient.id}>{ingredient.name}</MenuItem>)
+                    })
+                  }
                 </Select>
               </FormControl>
             </form>
